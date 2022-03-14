@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Feedback {
+  id        Int       @id @default(autoincrement())
+  title     String    @db.VarChar()
+  category  Category
+  detail    String    @db.VarChar()
+  status    Status    @default(Suggestion)
+  upvotes   Int       @default(0)
+  deleted   Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  comments  Comment[]
+}
+
+model Comment {
+  id         Int       @id @default(autoincrement())
+  content    String    @db.VarChar()
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  feedback   Feedback  @relation(fields: [feedbackId], references: [id])
+  feedbackId Int
+  inReplyTo  Comment?  @relation("CommentToComment", fields: [commentId], references: [id])
+  replies    Comment[] @relation("CommentToComment")
+  commentId  Int?
+}
+
+enum Category {
+  UI
+  UX
+  Enhancement
+  Bug
+  Feature
+}
+
+enum Status {
+  Suggestion
+  Planned
+  InProgress
+  Live
+}

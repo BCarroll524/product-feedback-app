@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .btn {
+    @apply py-3 px-6 rounded-xl text-sm font-bold text-gray transition-colors disabled:brightness-75;
+  }
+
+  .btn-purple {
+    @apply btn bg-purple hover:bg-purple-hover;
+  }
+
+  .btn-blue {
+    @apply btn bg-blue hover:bg-blue-hover;
+  }
+
+  .btn-navy {
+    @apply btn bg-navy hover:bg-navy-hover;
+  }
+
+  .btn-red {
+    @apply btn bg-red hover:bg-red-hover;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent !text-navy hover:underline underline-offset-1;
+  }
+
+  .btn-ghost-white {
+    @apply btn bg-transparent !text-white hover:underline underline-offset-1;
+  }
+}
