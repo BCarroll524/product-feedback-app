@@ -1,6 +1,6 @@
 import type { LoaderFunction } from "remix";
 import { json, useLoaderData } from "remix";
-import { LightningBoltIcon } from "@heroicons/react/outline";
+import { LightningBoltIcon, PlusIcon } from "@heroicons/react/outline";
 import { Link } from "remix";
 import { ChipCard } from "~/components/chip-card";
 import { Roadmap } from "~/components/roadmap-card";
@@ -58,7 +58,7 @@ export default function Index() {
             <div className="self-center flex-shrink-0 sm:hidden">
               <LightningBoltIcon className="w-6 h-6 text-white" />
             </div>
-            <H3 variant="light" className="pr-4 sm:hidden">
+            <H3 variant="light" className="pr-4 tabular-nums sm:hidden">
               {data.suggestions.length}{" "}
               <span className="md:hidden">Suggestions</span>
             </H3>
@@ -101,10 +101,10 @@ export default function Index() {
   );
 }
 
-const AddFeedbackButton = () => {
+export const AddFeedbackButton = () => {
   return (
-    <Link to="/new" className="btn-purple font-bold">
-      Add Feedback
+    <Link to="/new" className="btn-purple font-bold flex items-center gap-2">
+      <PlusIcon className="w-4 h-4 stroke-[2.5px]" /> Add Feedback
     </Link>
   );
 };

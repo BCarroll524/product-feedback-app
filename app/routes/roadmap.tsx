@@ -3,9 +3,10 @@ import { Link, LoaderFunction, useLoaderData } from "remix";
 import { json } from "remix";
 import { RoadmapColumn } from "~/components/roadmap-column";
 import { RoadmapTabs } from "~/components/roadmap-tabs";
-import { H1 } from "~/components/typography";
+import { H1, Paragraph } from "~/components/typography";
 import { DbFeedback } from "~/types";
 import { fetchRoadmap } from "~/utils/feedback.server";
+import { AddFeedbackButton } from ".";
 
 export type RoadmapLoaderData = {
   planned: DbFeedback[];
@@ -24,6 +25,9 @@ export const loader: LoaderFunction = async () => {
 export default function Roadmap() {
   const data = useLoaderData<RoadmapLoaderData>();
 
+  const hasRoadmapItems =
+    data.planned.length + data.inProgress.length + data.live.length > 0;
+
   return (
     <section
       className="pt-16 sm:!pt-0 md:pt-12  mr-auto ml-auto px-10 sm:px-0"
@@ -40,28 +44,42 @@ export default function Roadmap() {
           </Link>
           <H1 variant="light">Roadmap</H1>
         </div>
-        <Link to="/new" className="btn-purple">
-          Add Feedback
-        </Link>
+        <AddFeedbackButton />
       </header>
-      <div className="grid grid-cols-3 gap-6 md:gap-3 sm:hidden">
-        <RoadmapColumn
-          feedbacks={data.planned}
-          title="Planned"
-          description="Ideas prioritized for research"
-        />
-        <RoadmapColumn
-          feedbacks={data.inProgress}
-          title="In-Progress"
-          description="Currently being developed"
-        />
-        <RoadmapColumn
-          feedbacks={data.live}
-          title="Live"
-          description="Released features"
-        />
-      </div>
-      <RoadmapTabs />
+      {hasRoadmapItems ? (
+        <>
+          <div className="grid grid-cols-3 gap-6 md:gap-3 sm:hidden">
+            <RoadmapColumn
+              feedbacks={data.planned}
+              title="Planned"
+              description="Ideas prioritized for research"
+            />
+            <RoadmapColumn
+              feedbacks={data.inProgress}
+              title="In-Progress"
+              description="Currently being developed"
+            />
+            <RoadmapColumn
+              feedbacks={data.live}
+              title="Live"
+              description="Released features"
+            />
+          </div>
+          <RoadmapTabs />
+        </>
+      ) : (
+        <div className="bg-white rounded-xl h-[600px] flex flex-col justify-center items-center w-full">
+          <H1 variant="dark" className="pb-4">
+            There is no feedback yet.
+          </H1>
+          <Paragraph
+            size="1"
+            variant="dark"
+            className="whitespace-pre-wrap pb-12 text-center"
+          >{`Got a suggestion? Found a bug that needs to be squashed?\nWe love hearing about new ideas to improve out app.`}</Paragraph>
+          <AddFeedbackButton />
+        </div>
+      )}
     </section>
   );
 }

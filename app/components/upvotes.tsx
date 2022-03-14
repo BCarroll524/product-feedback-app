@@ -1,6 +1,7 @@
 import { ChevronUpIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
-import { Form, useLocation } from "remix";
+import { useEffect, useState } from "react";
+import { useLocation, useFetcher } from "remix";
 import { H4 } from "./typography";
 
 const Upvotes = ({
@@ -14,10 +15,24 @@ const Upvotes = ({
   className?: string;
   horizontal?: boolean;
 }) => {
+  const [localUpvotes, setLocalUpvotes] = useState(upvotes);
   const location = useLocation();
+  const fetcher = useFetcher();
+  const isUpVoting = fetcher.state === "submitting";
+
+  useEffect(() => {
+    if (isUpVoting) {
+      setLocalUpvotes((prevUpvotes) => prevUpvotes + 1);
+    }
+  }, [isUpVoting]);
+
   return (
-    <Form method="post" action={`/feedback/${id}/upvote`}>
-      <input type="hidden" name="redirect" value={location.pathname} />
+    <fetcher.Form method="post" action={`/feedback/${id}/upvote`}>
+      <input
+        type="hidden"
+        name="redirect"
+        value={location.pathname + location.search}
+      />
       <input type="hidden" name="feedbackId" value={id} />
       <button
         className={clsx(
@@ -27,10 +42,10 @@ const Upvotes = ({
           className
         )}
       >
-        <ChevronUpIcon className="w-6 h-6 md:w-4 md:h-4 flex-grow-0 text-blue flex-shrink-0 stroke-[3px]" />
-        <H4 className="tabular-nums">{upvotes}</H4>
+        <ChevronUpIcon className="w-4 h-4 flex-grow-0 text-blue flex-shrink-0 stroke-[3px]" />
+        <H4 className="tabular-nums">{localUpvotes}</H4>
       </button>
-    </Form>
+    </fetcher.Form>
   );
 };
 

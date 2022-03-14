@@ -1,5 +1,10 @@
 import { ArrowLeftIcon } from "@heroicons/react/outline";
-import { ActionFunction, LoaderFunction, useSearchParams } from "remix";
+import {
+  ActionFunction,
+  LoaderFunction,
+  useFetcher,
+  useSearchParams,
+} from "remix";
 import { Link, Form, redirect, useActionData } from "remix";
 import { json, useLoaderData } from "remix";
 import { Feedback } from "~/components/feedback";
@@ -10,7 +15,7 @@ import {
   fetchFeedbackById,
   replyToComment,
 } from "~/utils/feedback.server";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 import { badRequest, getErrorMessage } from "~/utils/misc";
 import { DbFeedback, DbComment } from "~/types";
@@ -112,7 +117,7 @@ export default function FeedbackPage() {
         const yOffset = -200;
         const yPosition =
           anchor.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({ top: yPosition });
+        window.scrollTo({ top: yPosition, behavior: "smooth" });
       }
     }
   }, [localLink]);
@@ -121,6 +126,22 @@ export default function FeedbackPage() {
     comment: "",
   });
   const isFormValid = formValues.comment.length > 0;
+
+  const formRef = useRef<HTMLFormElement>(null);
+  const fetcher = useFetcher();
+
+  const isCommenting =
+    fetcher.state === "submitting" &&
+    fetcher.submission.formData.get("_action") === "comment";
+
+  useEffect(() => {
+    if (!isCommenting) {
+      setFormValues({
+        comment: "",
+      });
+      formRef.current?.reset();
+    }
+  }, [isCommenting]);
 
   return (
     <section
@@ -193,7 +214,7 @@ export default function FeedbackPage() {
                 disabled={!isFormValid}
                 className="btn-purple"
               >
-                Post Comment
+                {isCommenting ? "Commenting..." : "Post Comment"}
               </button>
             </div>
           </Form>
