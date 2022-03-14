@@ -5,7 +5,7 @@ import {
   useFetcher,
   useSearchParams,
 } from "remix";
-import { Link, Form, redirect, useActionData } from "remix";
+import { Link, redirect, useActionData } from "remix";
 import { json, useLoaderData } from "remix";
 import { Feedback } from "~/components/feedback";
 import { H3, Paragraph } from "~/components/typography";
@@ -179,7 +179,7 @@ export default function FeedbackPage() {
             comments={data.feedback?.comments}
             numComments={data.feedback._count.comments}
           />
-          <Form
+          <fetcher.Form
             method="post"
             className="bg-white rounded-xl p-6"
             onChange={(e) => {
@@ -217,7 +217,7 @@ export default function FeedbackPage() {
                 {isCommenting ? "Commenting..." : "Post Comment"}
               </button>
             </div>
-          </Form>
+          </fetcher.Form>
         </div>
       ) : null}
     </section>
